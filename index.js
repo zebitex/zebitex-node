@@ -5,7 +5,8 @@ const crypto = require('crypto')
 function Zebitex(apiKey, apiSecret, isDev){
   this.key = apiKey
   this.secret = apiSecret
-  this.url = isDev ? "https://staging.zebitex.com/" : "https://zebitex.com/"
+  //this.url = isDev ? "https://staging.zebitex.com/" : "https://zebitex.com/"
+  this.url = 'http://localhost:3000/' //isDev ? "https://staging.zebitex.com/" : "https://zebitex.com/"
 
 }
 
@@ -19,7 +20,8 @@ Zebitex.prototype._getPublicRequest = function (path,query){
 }
 
 Zebitex.prototype._signRequest = function(params) {
-  let payload = [ params.method, params.path, params.nonce, JSON.stringify(params.query) ].join('|')
+  let payload = [ params.method, '/'+params.path, params.nonce, JSON.stringify(params.query) ].join('|')
+  console.log(payload)
   let hash = crypto.createHmac('sha256', this.secret).update(payload).digest('hex')
   return hash
 
@@ -53,7 +55,7 @@ Zebitex.prototype._privateRequest = function(method, path, query){
   }else{
     opts.body = query
   }
- 
+  console.log(signature,authHeader,query)
   return request(opts)
 }
 
