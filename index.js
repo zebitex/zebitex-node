@@ -87,8 +87,37 @@ Zebitex.prototype.trade_history = function (market) {
 Zebitex.prototype.funds = function () {
   return this._getPrivateRequest('api/v1/funds')
 }
+
 Zebitex.prototype.fundingHistory = function (code, type) {
   return this._getPrivateRequest('api/v1/funds/history', { code, type })
+}
+
+Zebitex.prototype.accountHistory = function (start_date, end_date, page, per) {
+  return this._getPrivateRequest('api/v1/history/account',{ start_date, end_date, page, per})
+}
+
+Zebitex.prototype.orderHistory = function (side, start_date, end_date, page, per) {
+  return this._getPrivateRequest('api/v1/history/orders',{ start_date, end_date, page, per})
+}
+
+Zebitex.prototype.tradeHistory = function (side, start_date, end_date, page, per) {
+  return this._getPrivateRequest('api/v1/history/trades',{ start_date, end_date, page, per})
+}
+
+Zebitex.prototype.openOrders = function ( page, per) {
+  return this._getPrivateRequest('api/v1/orders/current',{page, per})
+}
+
+Zebitex.prototype.cancelAllOrders = function ( ) {
+  return this._deletePrivateRequest('api/v1/orders/cancel_all')
+}
+
+Zebitex.prototype.cancelOrder = function ( id ) {
+  return this._deletePrivateRequest('api/v1/'+id+'/orders/')
+}
+
+Zebitex.prototype.newOrder = function ( bid, ask, side, price, amount, market, ord_type ) {
+  return this._postPrivateRequest('api/v1/orders/', {  bid, ask, side, price, amount, market, ord_type })
 }
 
 module.exports = Zebitex
