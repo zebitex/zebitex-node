@@ -5,7 +5,6 @@ function Zebitex (apiKey, apiSecret, isDev) {
   this.key = apiKey
   this.secret = apiSecret
   this.url = isDev ? 'https://staging.zebitex.com/' : 'https://zebitex.com/'
-  // this.url = 'http://localhost:3000/' //isDev ? "https://staging.zebitex.com/" : "https://zebitex.com/"
 }
 
 Zebitex.prototype._getPublicRequest = function (path, query) {
@@ -90,5 +89,5 @@ Zebitex.prototype.funds = function () {
 Zebitex.prototype.fundingHistory = function (code, type) {
   return this._getPrivateRequest('api/v1/funds/history', { code, type })
 }
-// Zebitex.prototype.
+
 module.exports = Zebitex
