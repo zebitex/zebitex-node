@@ -112,7 +112,7 @@ Zebitex.prototype.cancelAllOrders = function () {
 }
 
 Zebitex.prototype.cancelOrder = function (id) {
-  return this._deletePrivateRequest('api/v1/orders/'+id+'/cancel')
+  return this._deletePrivateRequest('api/v1/orders/'+id+'/cancel', { id: id.toString() })
 }
 
 Zebitex.prototype.newOrder = function (bid, ask, side, price, amount, market, ord_type) {
