@@ -31,9 +31,9 @@ client.newOrder('ltc', // quote currency
 ).then(console.log)
 ```
 
-* cancel opened order
+* cancel an opened order
 ```
 let orderId=1234
-client.cancelOrder(order).then(console.log)
+client.cancelOrder(orderId).then(console.log)
 
 ```
