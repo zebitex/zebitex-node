@@ -15,7 +15,7 @@ const client = new ApiClient('<Access key>', '<Secret key>', TestEnv) // instanc
 
 * retrieve you assets balances
 ```
-client.fund()
+client.fund().then(console.log)
 
 ```
 
