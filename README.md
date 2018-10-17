@@ -8,14 +8,14 @@ Node.js client for Zebitex exchange API
 * Generate api keys: https://zebitex.com/profile/api-tokens (use https://staging.zebitex.com/ for testing environnement)
 
 ```
-const ApiClient = require('zebitex-node') 
+const ApiClient = require('zebitex-node')
 const testEnv = true // set to false to use in production
-const client = new ApiClient('<Access key>', '<Secret key>', TestEnv) // instanciate your client 
+const client = new ApiClient('<Access key>', '<Secret key>', TestEnv) // instantiate your client
 ```
 
 * retrieve you assets balances
 ```
-client.fund().then(console.log)
+client.funds().then(console.log)
 
 ```
 
