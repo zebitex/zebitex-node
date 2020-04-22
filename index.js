@@ -7,39 +7,39 @@ function Zebitex (apiKey, apiSecret, isDev) {
 }
 
 Zebitex.prototype._getPublicRequest = async function (path, query) {
-  let opts = {
+  const opts = {
     url: this.url + path,
     data: query,
     json: true
   }
   try {
-    const req = await axios.request(opts)  
+    const req = await axios.request(opts)
     return req.data
-  } catch(e) {
+  } catch (e) {
     return (e.response.data)
   }
 }
 
 Zebitex.prototype._signRequest = function (params) {
-  let args = params.query ? JSON.stringify(params.query) : '{}'
-  let payload = [ params.method, '/' + params.path, params.nonce, args ].join('|')
-  let hash = crypto.createHmac('sha256', this.secret).update(payload).digest('hex')
+  const args = params.query ? JSON.stringify(params.query) : '{}'
+  const payload = [params.method, '/' + params.path, params.nonce, args].join('|')
+  const hash = crypto.createHmac('sha256', this.secret).update(payload).digest('hex')
   return hash
 }
 
 Zebitex.prototype._buildAuthHeader = function (nonce, query, signature) {
-  let params = query ? Object.keys(query).join(';') : ''
-  let header = `ZEBITEX-HMAC-SHA256 access_key=${this.key}, signature=${signature}, tonce=${nonce}, signed_params=${params}`
+  const params = query ? Object.keys(query).join(';') : ''
+  const header = `ZEBITEX-HMAC-SHA256 access_key=${this.key}, signature=${signature}, tonce=${nonce}, signed_params=${params}`
 
-  return { 'Authorization': header }
+  return { Authorization: header }
 }
 
 Zebitex.prototype._privateRequest = async function (method, path, query) {
-  let nonce = Date.now()
-  let signature = this._signRequest({ method, path, query, nonce })
-  let authHeader = this._buildAuthHeader(nonce, query, signature)
+  const nonce = Date.now()
+  const signature = this._signRequest({ method, path, query, nonce })
+  const authHeader = this._buildAuthHeader(nonce, query, signature)
 
-  let opts = {
+  const opts = {
     method: method,
     url: this.url + path,
     headers: authHeader,
@@ -51,14 +51,13 @@ Zebitex.prototype._privateRequest = async function (method, path, query) {
   } else {
     opts.data = query
   }
-  
+
   try {
-    const req = await axios.request(opts)  
+    const req = await axios.request(opts)
     return req.data
-  } catch(e) {
+  } catch (e) {
     return (e.response.data)
   }
-  
 }
 
 Zebitex.prototype._getPrivateRequest = async function (path, query) {
@@ -73,12 +72,11 @@ Zebitex.prototype._deletePrivateRequest = async function (path, query) {
   return await this._privateRequest('DELETE', path, query)
 }
 
-
-Zebitex.prototype.getSessionInfo = async function(){
+Zebitex.prototype.getSessionInfo = async function () {
   return await this._getPrivateRequest('api/V1/sessions/info')
 }
 
-Zebitex.prototype.authWss = async function (socketId, channelName){
+Zebitex.prototype.authWss = async function (socketId, channelName) {
   return await this._postPrivateRequest('api/V1/pusher/auth', { channelName, socketId })
 }
 
@@ -116,12 +114,12 @@ Zebitex.prototype.accountHistory = async function (start_date, end_date, page, p
   return await this._getPrivateRequest('api/v1/history/account', { start_date, end_date, page, per })
 }
 
-Zebitex.prototype.orderHistory = async function ({per, cursor}) {
+Zebitex.prototype.orderHistory = async function ({ per, cursor }) {
   return await this._getPrivateRequest('api/v1/history/orders', { per, cursor })
 }
 
-Zebitex.prototype.tradeHistory = async function ({per, cursor}) {
-  return await this._getPrivateRequest('api/v1/history/trades', {per, cursor})
+Zebitex.prototype.tradeHistory = async function ({ per, cursor }) {
+  return await this._getPrivateRequest('api/v1/history/trades', { per, cursor })
 }
 
 Zebitex.prototype.openOrders = async function (page, per) {
@@ -133,7 +131,7 @@ Zebitex.prototype.cancelAllOrders = async function () {
 }
 
 Zebitex.prototype.cancelOrder = async function (id) {
-  return await this._deletePrivateRequest('api/v1/orders/'+id+'/cancel', { id: id.toString() })
+  return await this._deletePrivateRequest('api/v1/orders/' + id + '/cancel', { id: id.toString() })
 }
 
 Zebitex.prototype.newOrder = async function (bid, ask, side, price, amount, market, ord_type) {
@@ -141,7 +139,7 @@ Zebitex.prototype.newOrder = async function (bid, ask, side, price, amount, mark
 }
 
 Zebitex.prototype.create_buy_limit_order = async function (price, amount) {
-  return await this.newOrder( 
+  return await this.newOrder(
     'usdt', // quote currency
     'btc', // base currency
     'bid', // order side (bid or ask)
@@ -152,7 +150,7 @@ Zebitex.prototype.create_buy_limit_order = async function (price, amount) {
 }
 
 Zebitex.prototype.create_sell_limit_order = async function (price, amount) {
-  return await this.newOrder( 
+  return await this.newOrder(
     'usdt', // quote currency
     'btc', // base currency
     'ask', // order side (bid or ask)
@@ -163,12 +161,12 @@ Zebitex.prototype.create_sell_limit_order = async function (price, amount) {
 }
 
 Zebitex.prototype.create_sell_market_order = async function (amount) {
-  // NB this is an emulation that just hit best bid hence it can fail 
-  // in case of adversial price movement 
-  const book = await this.orderbook("btcusdt")
+  // NB this is an emulation that just hit best bid hence it can fail
+  // in case of adversial price movement
+  const book = await this.orderbook('btcusdt')
   const best_bid = book.bids[0][0]
 
-  return await this.newOrder( 
+  return await this.newOrder(
     'usdt', // quote currency
     'btc', // base currency
     'ask', // order side (bid or ask)
@@ -179,12 +177,12 @@ Zebitex.prototype.create_sell_market_order = async function (amount) {
 }
 
 Zebitex.prototype.create_buy_market_order = async function (amount) {
-  // NB this is an emulation that just hit best ask hence it can fail 
-  // in case of adversial price movement 
-  const book = await this.orderbook("btcusdt")
+  // NB this is an emulation that just hit best ask hence it can fail
+  // in case of adversial price movement
+  const book = await this.orderbook('btcusdt')
   const best_ask = book.asks[0][0]
 
-  return await this.newOrder( 
+  return await this.newOrder(
     'usdt', // quote currency
     'btc', // base currency
     'bid', // order side (bid or ask)
