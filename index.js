@@ -3,7 +3,7 @@ const crypto = require('crypto')
 function Zebitex (apiKey, apiSecret, isDev) {
   this.key = apiKey
   this.secret = apiSecret
-  this.url = isDev ? 'https://api-staging.zebitex.com/' : 'https://zebitex.com/'
+  this.url = isDev ? 'https://api-staging.zebitex.com/' : 'https://api.zebitex.com/'
 }
 
 Zebitex.prototype._getPublicRequest = async function (path, query) {
